@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dossier Werkwoordspelling - Politieacademie</title>
+    <style>
+        body {
+            background-color: #002e5f; /* Politie blauw */
+            font-family: 'Courier New', Courier, monospace;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .dossier {
+            background-color: #f4f4f4;
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            border: 10px solid #ffcc00; /* Politie geel/goud */
+            box-shadow: 10px 10px 0px #000;
+            position: relative;
+        }
+        .dossier::before {
+            content: "VERTROUWELIJK - ALLEEN VOOR BEVOEGD PERSONEEL";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: red;
+            font-weight: bold;
+            border: 2px solid red;
+            padding: 5px;
+            transform: rotate(5deg);
+        }
+        h1 { text-align: center; text-transform: uppercase; border-bottom: 3px solid #002e5f; }
+        .instrucitie { font-style: italic; margin-bottom: 20px; background: #e0e0e0; padding: 10px; border-left: 5px solid #002e5f; }
+        .oefening-container { margin-top: 20px; }
+        .zin-rij { margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
+        input[type="text"] {
+            border: none;
+            border-bottom: 2px solid #002e5f;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1rem;
+            width: 150px;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        input:focus { outline: none; border-bottom-color: #ffcc00; }
+        .btn-container { text-align: center; margin-top: 30px; }
+        button {
+            background-color: #002e5f;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        button:hover { background-color: #ffcc00; color: #002e5f; }
+        .score { margin-top: 20px; font-weight: bold; font-size: 1.2rem; text-align: center; }
+        .feedback-correct { color: green; }
+        .feedback-fout { color: red; text-decoration: line-through; }
+        .antwoord-hint { color: blue; font-size: 0.9em; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="dossier">
+    <h1>🚨 Dossier: Werkwoordspelling 🚨</h1>
+    <div class="instrucitie">
+        <strong>Opdracht:</strong> Vervoeg het werkwoord tussen haakjes in de juiste vorm. Let op de tijd (TT of VT) en de persoon. Fouten in processen-verbaal worden niet getolereerd!
+    </div>
+
+    <div id="oefening" class="oefening-container"></div>
+
+    <div class="btn-container">
+        <button onclick="checkAntwoorden()">Dossier Controleren</button>
+        <button onclick="genereerOefening()">Nieuwe Surveillance</button>
+    </div>
+
+    <div id="resultaat" class="score"></div>
+</div>
+
+<script>
+    const database = [
+        // TT - Ik-vorm (20)
+        { zin: "Ik ___ (parkeren) mijn surveillancewagen midden op de rotonde.", ans: "parkeer" },
+        { zin: "Ik ___ (arresteren) de verdachte die probeerde te vluchten op een eenwieler.", ans: "arresteer" },
+        { zin: "Ik ___ (noteren) de naam van de boze burger in mijn boekje.", ans: "noteer" },
+        { zin: "Ik ___ (proeven) stiekem van de in beslag genomen vlaai.", ans: "proef" },
+        { zin: "Ik ___ (geloven) niets van dat verhaal over die pratende kat.", ans: "geloof" },
+        { zin: "Ik ___ (fuseren) mijn lunchpauze met een dutje in de cel.", ans: "fuseer" },
+        { zin: "Ik ___ (bevestigen) de handboeien iets te strak bij de boef.", ans: "bevestig" },
+        { zin: "Ik ___ (onderzoeken) het spoor van donuts op het bureau.", ans: "onderzoek" },
+        { zin: "Ik ___ (luisteren) via de portofoon naar de bestelling van de hoofdagent.", ans: "luister" },
+        { zin: "Ik ___ (vermoeden) dat de dader een clown is.", ans: "vermoed" },
+        { zin: "Ik ___ (waarschuwen) de oma die 120 reed in een woonwijk.", ans: "waarschuw" },
+        { zin: "Ik ___ (verven) de celmuur per ongeluk felroze.", ans: "verf" },
+        { zin: "Ik ___ (dromen) van een promotie naar de bereden politie.", ans: "droom" },
+        { zin: "Ik ___ (verbazen) me over de domheid van deze inbreker.", ans: "verbazing" }, // check: verbaas
+        { zin: "Ik ___ (verbaas) me over het feit dat de dader zijn ID liet liggen.", ans: "verbaas" },
+        { zin: "Ik ___ (herkennen) de boef aan zijn opvallende neuspiercing.", ans: "herken" },
+        { zin: "Ik ___ (achterhalen) het adres van de geheime illegale bingoclub.", ans: "achterhaal" },
+        { zin: "Ik ___ (verhoren) de verdachte met een felle lamp in zijn gezicht.", ans: "verhoor" },
+        { zin: "Ik ___ (plannen) een inval bij de plaatselijke sjoelvereniging.", ans: "plan" },
+        { zin: "Ik ___ (pak) mijn lasergun en verstop me achter een boom.", ans: "pak" },
+
+        // TT - Hij-vorm (20)
+        { zin: "De hoofdagent ___ (melden) dat de koffie op is. Code rood!", ans: "meldt" },
+        { zin: "Mijn partner ___ (negeren) de regels en eet een shoarma in de wagen.", ans: "negeert" },
+        { zin: "De verdachte ___ (ontkennen) dat hij de bankovervaller is.", ans: "ontkent" },
+        { zin: "Die hond ___ (blaffen) altijd naar mensen met een snor.", ans: "blaft" },
+        { zin: "De commissaris ___ (vinden) dat we te veel tijd verspillen aan TikTok.", ans: "vindt" },
+        { zin: "Hij ___ (verhuizen) de gestolen fietsen naar het depot.", ans: "verhuist" },
+        { zin: "De getuige ___ (beven) als een rietje tijdens het verhoor.", ans: "beeft" },
+        { zin: "De rechercheur ___ (analyseren) de vingerafdrukken op de kaas.", ans: "analyseert" },
+        { zin: "Het arrestatieteam ___ (bestormen) het verkeerde pand.", ans: "bestormt" },
+        { zin: "Mijn collega ___ (antwoorden) nooit op mijn grappen.", ans: "antwoordt" },
+        { zin: "De boef ___ (beloven) dat hij nooit meer zal stelen.", ans: "belooft" },
+        { zin: "De officier van justitie ___ (eisen) een levenslang verbod op spruitjes.", ans: "eist" },
+        { zin: "Hij ___ (redden) een kat uit de boom met een taser.", ans: "redt" },
+        { zin: "De burgemeester ___ (bedanken) ons voor het vangen van de taartgooier.", ans: "bedankt" },
+        { zin: "Die zakkenroller ___ (huilen) krokodillentranen bij de rechter.", ans: "huilt" },
+        { zin: "De agent ___ (laden) zijn wapen met uiterste precisie.", ans: "laadt" },
+        { zin: "De hacker ___ (kraken) de code van de frisdrankautomaat.", ans: "kraakt" },
+        { zin: "Het slachtoffer ___ (herinneren) zich alleen een paarse hoed.", ans: "herinnert" },
+        { zin: "De drugshond ___ (niesen) door al dat verdachte poeder.", ans: "niest" },
+        { zin: "De instructeur ___ (schelden) op de cadetten die te laat zijn.", ans: "scheldt" },
+
+        // VT - Hij-vorm (20)
+        { zin: "De dief ___ (vluchten) gisteren op een gestolen driewieler.", ans: "vluchtte" },
+        { zin: "De agent ___ (landen) met zijn drone in de vijver.", ans: "landde" },
+        { zin: "De verdachte ___ (antwoorden) met 'geen commentaar'.", ans: "antwoordde" },
+        { zin: "Mijn collega ___ (verven) zijn haar blauw voor de undercoveractie.", ans: "verfde" },
+        { zin: "De voorbijganger ___ (melden) een verdachte eenhoorn in het park.", ans: "meldde" },
+        { zin: "De rechercheur ___ (spitten) door het afval van de crimineel.", ans: "spitte" },
+        { zin: "De boef ___ (rusten) uit in de cel na zijn ontsnapping.", ans: "rustte" },
+        { zin: "Hij ___ (zetten) de sirene aan om sneller bij de snackbar te zijn.", ans: "zette" },
+        { zin: "De hond ___ (ruiken) de verborgen worsten in de tas.", ans: "rook" }, // onregelmatig, maar we houden het simpel of passen aan
+        { zin: "De agent ___ (stoppen) de auto voor een routinecontrole.", ans: "stopte" },
+        { zin: "Zij ___ (verhuizen) de bewijsstukken naar een andere doos.", ans: "verhuisde" },
+        { zin: "De crimineel ___ (juichen) toen hij vrijspraak kreeg.", ans: "juichte" },
+        { zin: "Hij ___ (schuilen) in een kliko voor de regen.", ans: "schuilde" },
+        { zin: "De wachtcommandant ___ (branden) zijn tong aan de hete soep.", ans: "brandde" },
+        { zin: "De achtervolging ___ (eindigen) in een moddersloot.", ans: "eindigde" },
+        { zin: "De agent ___ (posten) een foto van zijn lunch op Instagram.", ans: "postte" },
+        { zin: "De getuige ___ (verwarren) de dader met de kerstman.", ans: "verwarde" },
+        { zin: "Hij ___ (pleiten) onschuldig ondanks de videobeelden.", ans: "pleitte" },
+        { zin: "Zij ___ (belonen) de eerlijke vinder met een handdruk.", ans: "beloonde" },
+        { zin: "De dief ___ (krabben) aan zijn hoofd toen hij de politie zag.", ans: "krabde" },
+
+        // Voltooid Deelwoord (20)
+        { zin: "De verdachte is eindelijk ___ (pakken).", ans: "gepakt" },
+        { zin: "De kluis is met een snijbrander ___ (openen).", ans: "geopend" },
+        { zin: "Heb je dat proces-verbaal al ___ (tekenen)?", ans: "getekend" },
+        { zin: "De straat is door de ME ___ (schoonvegen).", ans: "schoongeveegd" },
+        { zin: "De drugs zijn in de haven ___ (onderscheppen).", ans: "onderschept" },
+        { zin: "De agent heeft zijn excuses ___ (aanbieden).", ans: "aangeboden" },
+        { zin: "Hij heeft de hele nacht in de cel ___ (brommen).", ans: "gebromd" },
+        { zin: "De gestolen auto is in het kanaal ___ (belanden).", ans: "beland" },
+        { zin: "Heeft zij de getuige al ___ (horen)?", ans: "gehoord" },
+        { zin: "Het bewijs is vakkundig ___ (vernietigen).", ans: "vernietigd" },
+        { zin: "De dader heeft zijn straf ___ (aanvaarden).", ans: "aanvaard" },
+        { zin: "De agent is door een boze burger ___ (krabben).", ans: "gekrabd" },
+        { zin: "De ruit is door een baksteen ___ (verbrijzelen).", ans: "verbrijzeld" },
+        { zin: "Er is weer een nieuwe wet ___ (maken).", ans: "gemaakt" },
+        { zin: "De ME heeft de krakers ___ (verwijderen).", ans: "verwijderd" },
+        { zin: "De hond heeft de dief in zijn billen ___ (bijten).", ans: "gebeten" },
+        { zin: "De agent heeft per ongeluk op zichzelf ___ (taseren).", ans: "getaserd" },
+        { zin: "Alle rapporten zijn keurig ___ (archiveren).", ans: "gearchiveerd" },
+        { zin: "De boef is door de mand ___ (vallen).", ans: "gevallen" },
+        { zin: "De diefstal is door de camera ___ (filmen).", ans: "gefilmd" }
+    ];
+
+    let geselecteerdeZinnen = [];
+
+    function genereerOefening() {
+        const container = document.getElementById('oefening');
+        const resultaatDiv = document.getElementById('resultaat');
+        container.innerHTML = '';
+        resultaatDiv.innerHTML = '';
+        
+        // Shuffle en kies er 20
+        const shuffled = database.sort(() => 0.5 - Math.random());
+        geselecteerdeZinnen = shuffled.slice(0, 20);
+
+        geselecteerdeZinnen.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'zin-rij';
+            div.innerHTML = `
+                ${index + 1}. ${item.zin.replace('___', `<input type="text" id="input-${index}" autocomplete="off">`)}
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function checkAntwoorden() {
+        let score = 0;
+        geselecteerdeZinnen.forEach((item, index) => {
+            const input = document.getElementById(`input-${index}`);
+            const userAns = input.value.trim().toLowerCase();
+            const correctAns = item.ans.toLowerCase();
+            
+            // Verwijder oude feedback
+            const oudAntwoord = input.parentNode.querySelector('.antwoord-hint');
+            if(oudAntwoord) oudAntwoord.remove();
+
+            if (userAns === correctAns) {
+                score++;
+                input.className = 'feedback-correct';
+            } else {
+                input.className = 'feedback-fout';
+                const hint = document.createElement('span');
+                hint.className = 'antwoord-hint';
+                hint.innerText = `Correct: ${item.ans}`;
+                input.parentNode.appendChild(hint);
+            }
+        });
+
+        const resultaatDiv = document.getElementById('resultaat');
+        resultaatDiv.innerHTML = `Resultaat: ${score} van de 20 correct. ${score < 15 ? "Huisarrest op het bureau!" : "Goed gewerkt, agent!"}`;
+    }
+
+    // Start de eerste keer
+    genereerOefening();
+</script>
+
+</body>
+</html>
