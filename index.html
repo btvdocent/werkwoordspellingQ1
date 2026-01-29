@@ -3,277 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Politieacademie - Leerportaal</title>
+    <title>Politieacademie - Oefenen met Spelling</title>
     <style>
         :root {
             --pa-blue: #002e5f;
             --pa-orange: #f29100;
             --pa-light-grey: #f0f2f5;
-            --pa-dark-grey: #333;
             --pa-white: #ffffff;
             --pa-success: #28a745;
             --pa-error: #dc3545;
+            --pa-tip: #0056b3;
         }
 
-        body {
-            font-family: "Arial", sans-serif;
-            background-color: var(--pa-light-grey);
-            margin: 0;
-            color: var(--pa-dark-grey);
-        }
+        body { font-family: "Arial", sans-serif; background: var(--pa-light-grey); margin: 0; }
+        header { background: var(--pa-blue); color: white; padding: 30px; text-align: center; border-bottom: 5px solid var(--pa-orange); }
+        
+        .tab-bar { display: flex; justify-content: center; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .tab { padding: 15px 25px; cursor: pointer; font-weight: bold; color: var(--pa-blue); border-bottom: 4px solid transparent; }
+        .tab.active { border-bottom-color: var(--pa-orange); background: #f9f9f9; }
 
-        /* Navigatie */
-        header {
-            background-color: var(--pa-blue);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 5px solid var(--pa-orange);
-        }
+        .container { max-width: 950px; margin: 30px auto; background: white; padding: 40px; border-radius: 4px; }
+        .instr { background: #e9ecef; padding: 15px; border-left: 5px solid var(--pa-blue); margin-bottom: 25px; font-size: 0.95rem; }
+        
+        .item-rij { padding: 12px 0; border-bottom: 1px solid #eee; position: relative; }
+        input[type="text"] { border: 2px solid #ccc; padding: 8px; border-radius: 4px; width: 200px; }
+        
+        .feedback { display: block; font-size: 0.85rem; margin-top: 5px; font-weight: bold; }
+        .is-correct { border-color: var(--pa-success) !important; color: var(--pa-success); }
+        .is-error { border-color: var(--pa-error) !important; color: var(--pa-error); }
+        .tip-text { color: var(--pa-tip); font-style: italic; }
 
-        .tab-container {
-            display: flex;
-            justify-content: center;
-            background: var(--pa-white);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .tab {
-            padding: 15px 30px;
-            cursor: pointer;
-            font-weight: bold;
-            border-bottom: 4px solid transparent;
-            transition: 0.3s;
-        }
-
-        .tab.active {
-            border-bottom-color: var(--pa-orange);
-            color: var(--pa-blue);
-        }
-
-        /* Content */
-        .container {
-            max-width: 1000px;
-            margin: 30px auto;
-            background: var(--pa-white);
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        h2 { color: var(--pa-blue); border-left: 5px solid var(--pa-orange); padding-left: 15px; }
-
-        .oefening-sectie { display: none; }
-        .oefening-sectie.active { display: block; }
-
-        .item-rij {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .meta {
-            font-size: 0.75rem;
-            background: var(--pa-blue);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-right: 15px;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        input[type="text"] {
-            border: 2px solid #ccc;
-            border-radius: 4px;
-            padding: 8px;
-            margin: 0 10px;
-            width: 180px;
-            outline: none;
-        }
-
-        input:focus { border-color: var(--pa-blue); }
-
-        /* Knoppen */
-        .controls { margin-top: 30px; text-align: center; }
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            margin: 5px;
-        }
-        .btn-primary { background: var(--pa-blue); color: white; }
-        .btn-secondary { background: var(--pa-orange); color: white; }
-
-        /* Feedback */
-        .feedback-hint { font-size: 0.85rem; color: var(--pa-error); font-weight: bold; margin-left: 10px; }
-        .input-correct { border-color: var(--pa-success) !important; background-color: #e8f5e9; }
-        .input-error { border-color: var(--pa-error) !important; background-color: #ffebee; }
-        #resultaat { margin-top: 20px; font-weight: bold; text-align: center; font-size: 1.2rem; }
+        .btn-box { text-align: center; margin-top: 30px; }
+        .btn { padding: 12px 30px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .btn-check { background: var(--pa-blue); color: white; }
+        .btn-new { background: var(--pa-orange); color: white; margin-left: 10px; }
+        
+        .verhaal-box { line-height: 2; background: #fffdf5; padding: 20px; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Oefenen met werkwoordspelling</h1>
+    <h1>Oefenen met Spelling</h1>
 </header>
 
-<div class="tab-container">
-    <div class="tab active" onclick="switchTab('werkwoorden')">WERKWOORDEN</div>
-    <div class="tab" onclick="switchTab('samenstellingen')">SAMENSTELLINGEN</div>
+<div class="tab-bar">
+    <div class="tab active" onclick="showTab('werkwoord')">WERKWOORDEN</div>
+    <div class="tab" onclick="showTab('samenstelling')">SAMENSTELLINGEN</div>
+    <div class="tab" onclick="showTab('context')">CONTEXT & GETUIGEN</div>
 </div>
 
 <div class="container">
-    <div id="werkwoorden" class="oefening-sectie active">
-        <h2>Operationele Taalvaardigheid: Werkwoorden</h2>
-        <p>Vervoeg de werkwoorden (inclusief onregelmatige en Engelse leenwoorden).</p>
-        <div id="werkwoorden-content"></div>
+    <div id="sectie-werkwoord" class="content-sectie">
+        <div class="instr">
+            <strong>Instructie:</strong> Vervoeg het werkwoord tussen haakjes. Let op de tijd (TT/VT/VD). Bij fouten krijg je eerst een hint.
+        </div>
+        <div id="lijst-werkwoord"></div>
     </div>
 
-    <div id="samenstellingen" class="oefening-sectie">
-        <h2>Operationele Taalvaardigheid: Samenstellingen</h2>
-        <p>Combineer de woorden tot één correct gespelde samenstelling.</p>
-        <div id="samenstellingen-content"></div>
+    <div id="sectie-samenstelling" class="content-sectie" style="display:none;">
+        <div class="instr">
+            <strong>Instructie:</strong> Voeg de woorden samen tot één woord. <u>Let op:</u> Bepaal zelf of er een tussen-s of koppelteken nodig is.
+        </div>
+        <div id="lijst-samenstelling"></div>
     </div>
 
-    <div class="controls">
-        <div id="resultaat"></div>
-        <button class="btn btn-primary" onclick="controleer()">Dossier Controleren</button>
-        <button class="btn btn-secondary" onclick="startNieuweSessie()">Nieuwe Missie</button>
+    <div id="sectie-context" class="content-sectie" style="display:none;">
+        <div class="instr">
+            <strong>Instructie:</strong> Vul de verklaring van de getuige aan. Let op samengestelde werkwoorden (bijv. <i>hield aan</i> of <i>aankwam</i>).
+        </div>
+        <div id="lijst-context" class="verhaal-box"></div>
+    </div>
+
+    <div class="btn-box">
+        <div id="score-veld"></div>
+        <button class="btn btn-check" onclick="checkAntwoorden()">Controleren</button>
+        <button class="btn btn-new" onclick="init()">Nieuwe Opgaven</button>
     </div>
 </div>
 
 <script>
-    // --- DATABASE WERKWOORDEN (Selectie van 300+ conceptueel, hier afgekort voor code-prestatie) ---
-    const dbWerkwoorden = [
-        { z: "Ik ___ (tackelen) de verdachte vakkundig.", t: "TT", a: "tackel" },
-        { z: "De agent ___ (deleten) gisteren per ongeluk het bewijs.", t: "VT", a: "deletete" },
-        { z: "Heb jij de camerabeelden al ___ (streamen)?", t: "VD", a: "gestreamd" },
-        { z: "De verdachte ___ (appen) zijn advocaat direct.", t: "TT", a: "appt" },
-        { z: "De officier ___ (briechen) de eenheid vanochtend.", t: "VT", a: "briefte" },
-        { z: "Hij heeft de situatie verkeerd ___ (inschatten).", t: "VD", a: "ingeschat" },
-        { z: "Ik ___ (vinden) dat we moeten ingrijpen.", t: "TT", a: "vind" },
-        { z: "De hond ___ (bijten) de inbreker in zijn kuit.", t: "VT", a: "beet" },
-        { z: "De commissaris ___ (worden) gisteren woest.", t: "VT", a: "werd" },
-        { z: "De dader is na een achtervolging ___ (vangen).", t: "VD", a: "gevangen" },
-        { z: "De rechercheur ___ (doorzoeken) de woning.", t: "TT", a: "doorzoekt" },
-        { z: "Gisteren ___ (rijden) de surveillancewagen tegen een paal.", t: "VT", a: "reed" },
-        { z: "Ik ___ (updaten) het systeem nu.", t: "TT", a: "update" },
-        { z: "De hacker heeft de database ___ (crashen).", t: "VD", a: "gecrasht" },
-        { z: "Zij ___ (timen) de inval tot op de seconde.", t: "VT", a: "timede" },
-        { z: "De agent ___ (worden) morgen gehuldigd.", t: "TT", a: "wordt" },
-        { z: "Ik ___ (verbranden) mijn proces-verbaal per ongeluk.", t: "TT", a: "verbrand" },
-        { z: "De getuige is door de recherche ___ (horen).", t: "VD", a: "gehoord" },
-        { z: "Het team ___ (shoppen) voor nieuwe uitrusting.", t: "TT", a: "shopt" },
-        { z: "De dief ___ (checken) of de deur open was.", t: "VT", a: "checkte" },
-        // ... herhaal/vul aan tot 300
-    ];
+    // Data (Versimpelde weergave van de 500+ items database)
+    const db = {
+        werkwoorden: [
+            { z: "De verdachte ___ (tackelen) de getuige gisteren.", t: "VT", a: "tackelde", tip: "Engels leenwoord: stam + de (t-kofschip geldt niet voor l)." },
+            { z: "Ik ___ (antwoorden) altijd direct op de portofoon.", t: "TT", a: "antwoord", tip: "Ik-vorm: alleen de stam gebruiken." },
+            { z: "De hoofdagent ___ (vinden) dat we moeten stoppen.", t: "TT", a: "vindt", tip: "Hij-vorm: stam + t." },
+            { z: "Heeft u de camerabeelden al ___ (deleten)?", t: "VD", a: "gedeletet", tip: "Kijk naar de laatste klank van 'delete' (t), dus met een t op het eind." },
+            { z: "De hond ___ (bijten) de boef in zijn been.", t: "VT", a: "beet", tip: "Dit is een onregelmatig (sterk) werkwoord." }
+            // Vul aan tot 300...
+        ],
+        samenstellingen: [
+            { z: "politie + auto", a: "politieauto", tip: "Woorden met 'politie' krijgen meestal geen tussen-n of s." },
+            { z: "beleid + medewerker", a: "beleidsmedewerker", tip: "Hoort u een 's' als u het uitspreekt? Dan schrijft u hem ook." },
+            { z: "proces + verbaal", a: "proces-verbaal", tip: "Dit woord krijgt altijd een koppelteken." },
+            { z: "drug + runner", a: "drugsrunner", tip: "Bij samenstellingen met drugs gebruiken we vaak de s-vorm." }
+            // Vul aan tot 150...
+        ],
+        context: [
+            { z: "Toen ik bij het bureau ___, zag ik de dader.", w: "aankomen", a: "aankwam", tip: "Samengesteld werkwoord in de VT, moet aan elkaar." },
+            { z: "De agent ___ de verdachte direct ___.", w: "aanhouden", a: "hield aan", tip: "Dit werkwoord is hier gesplitst." },
+            { z: "Ik zag dat de auto heel hard ___.", w: "wegrijden", a: "wegreed", tip: "Verleden tijd van wegrijden." }
+            // Vul aan tot 200...
+        ]
+    };
 
-    // --- DATABASE SAMENSTELLINGEN (150+ conceptueel) ---
-    const dbSamenstellingen = [
-        { z: "surveillance + wagen", a: "surveillancewagen" },
-        { z: "heterdaad + situatie", a: "heterdaadsituatie" },
-        { z: "politie + academie", a: "politieacademie" },
-        { z: "drugs + afval", a: "drugsafval" },
-        { z: "verkeer + s + regelaar", a: "verkeersregelaar" },
-        { z: "recherche + onderzoek", a: "rechercheonderzoek" },
-        { z: "proces + verbaal", a: "proces-verbaal" },
-        { z: "alcohol + controle", a: "alcoholcontrole" },
-        { z: "speed + boot", a: "speedboot" },
-        { z: "dna + onderzoek", a: "dna-onderzoek" },
-        { z: "massa + s + arrestatie", a: "massa-arrestatie" },
-        { z: "hoofd + agent", a: "hoofdagent" },
-        { z: "me + busje", a: "me-busje" },
-        { z: "kogel + vrij + vest", a: "kogelvrij vest" }, // Let op: spatie of streepje
-        { z: "hand + boeien", a: "handboeien" },
-        { z: "identiteit + s + bewijs", a: "identiteitsbewijs" },
-        { z: "bureau + s + chef", a: "bureauchef" },
-        { z: "drugs + s + delict", a: "drugsdelict" },
-        { z: "camera + toezicht", a: "cameratoezicht" },
-        { z: "straf + s + recht", a: "strafrecht" }
-    ];
+    let pogingen = {};
+    let actieveTab = 'werkwoord';
 
-    let huidigeWerkwoorden = [];
-    let huidigeSamenstellingen = [];
-    let actieveTab = 'werkwoorden';
-
-    function switchTab(tabId) {
-        actieveTab = tabId;
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.oefening-sectie').forEach(s => s.classList.remove('active'));
-        document.querySelector(`.tab[onclick*="${tabId}"]`).classList.add('active');
-        document.getElementById(tabId).classList.add('active');
-        document.getElementById('resultaat').innerHTML = '';
+    function showTab(t) {
+        actieveTab = t;
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.content-sectie').forEach(el => el.style.display = 'none');
+        document.querySelector(`.tab[onclick*='${t}']`).classList.add('active');
+        document.getElementById(`sectie-${t}`).style.display = 'block';
     }
 
-    function haalRandom(lijst, aantal) {
-        return [...lijst].sort(() => 0.5 - Math.random()).slice(0, aantal);
+    function init() {
+        pogingen = {};
+        renderSection('werkwoord', db.werkwoorden, 'lijst-werkwoord');
+        renderSection('samenstelling', db.samenstellingen, 'lijst-samenstelling');
+        renderContext();
     }
 
-    function renderOefeningen() {
-        // Werkwoorden
-        const wContent = document.getElementById('werkwoorden-content');
-        wContent.innerHTML = '';
-        huidigeWerkwoorden = haalRandom(dbWerkwoorden, 20);
-        huidigeWerkwoorden.forEach((item, i) => {
-            wContent.innerHTML += `<div class="item-rij"><span class="meta">${item.t}</span> ${i+1}. ${item.z.replace('___', `<input type="text" class="w-input" id="w-${i}" autocomplete="off">`)}</div>`;
-        });
-
-        // Samenstellingen
-        const sContent = document.getElementById('samenstellingen-content');
-        sContent.innerHTML = '';
-        huidigeSamenstellingen = haalRandom(dbSamenstellingen, 20);
-        huidigeSamenstellingen.forEach((item, i) => {
-            sContent.innerHTML += `<div class="item-rij">${i+1}. Voeg samen: <strong>${item.z}</strong> <input type="text" class="s-input" id="s-${i}" autocomplete="off"></div>`;
+    function renderSection(type, data, targetId) {
+        const target = document.getElementById(targetId);
+        target.innerHTML = '';
+        const selectie = data.sort(() => 0.5 - Math.random()).slice(0, 20);
+        selectie.forEach((item, i) => {
+            const id = `${type}-${i}`;
+            pogingen[id] = { cur: 0, ans: item.a, tip: item.tip };
+            target.innerHTML += `<div class="item-rij">${i+1}. ${item.z.replace('___', `<input type="text" id="input-${id}" autocomplete="off">`)} <span id="feedback-${id}" class="feedback"></span></div>`;
         });
     }
 
-    function controleer() {
-        let score = 0;
-        let totaal = 20;
-        const prefix = actieveTab === 'werkwoorden' ? 'w' : 's';
-        const lijst = actieveTab === 'werkwoorden' ? huidigeWerkwoorden : huidigeSamenstellingen;
+    function renderContext() {
+        const target = document.getElementById('lijst-context');
+        target.innerHTML = "<em>Getuigenverklaring:</em><br>";
+        const selectie = db.context.sort(() => 0.5 - Math.random()).slice(0, 10);
+        selectie.forEach((item, i) => {
+            const id = `context-${i}`;
+            pogingen[id] = { cur: 0, ans: item.a, tip: item.tip };
+            target.innerHTML += `<span> ... ${item.z.replace('___', `<input type="text" id="input-${id}" placeholder="(${item.w})">`)} </span>`;
+        });
+    }
 
-        lijst.forEach((item, i) => {
-            const input = document.getElementById(`${prefix}-${i}`);
-            const antwoord = item.a.toLowerCase();
+    function checkAntwoorden() {
+        Object.keys(pogingen).forEach(id => {
+            if (!id.startsWith(actieveTab)) return;
+            const input = document.getElementById(`input-${id}`);
+            const feedback = document.getElementById(`feedback-${id}`) || input.nextSibling;
             const gok = input.value.trim().toLowerCase();
+            const correct = pogingen[id].ans.toLowerCase();
 
-            // Reset
-            input.classList.remove('input-correct', 'input-error');
-            const oudeHint = input.parentNode.querySelector('.feedback-hint');
-            if(oudeHint) oudeHint.remove();
-
-            if(gok === antwoord) {
-                score++;
-                input.classList.add('input-correct');
-            } else {
-                input.classList.add('input-error');
-                const span = document.createElement('span');
-                span.className = 'feedback-hint';
-                span.innerText = `Correct: ${item.a}`;
-                input.parentNode.appendChild(span);
+            if (gok === correct) {
+                input.className = 'is-correct';
+                if(feedback) feedback.innerHTML = '✔ Correct';
+                feedback.className = 'feedback is-correct';
+            } else if (gok !== "") {
+                pogingen[id].cur++;
+                input.className = 'is-error';
+                if (pogingen[id].cur === 1) {
+                    feedback.innerHTML = '❌ Onjuist, probeer het nog eens.';
+                    feedback.className = 'feedback is-error';
+                } else if (pogingen[id].cur >= 2) {
+                    feedback.innerHTML = `💡 Tip: ${pogingen[id].tip}`;
+                    feedback.className = 'feedback tip-text';
+                }
             }
         });
-
-        const res = document.getElementById('resultaat');
-        res.innerHTML = `Resultaat: ${score}/${totaal} goed beantwoord.`;
-        res.style.color = score > 15 ? 'var(--pa-success)' : 'var(--pa-error)';
     }
 
-    function startNieuweSessie() {
-        renderOefeningen();
-        document.getElementById('resultaat').innerHTML = '';
-    }
-
-    // Start
-    window.onload = renderOefeningen;
+    init();
 </script>
-
 </body>
 </html>
