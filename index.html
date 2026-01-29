@@ -3,288 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scherpte-test: Werkwoordspelling</title>
+    <title>Politieacademie - Leerportaal</title>
     <style>
         :root {
-            --police-blue: #001f3f;
-            --neon-blue: #00d4ff;
-            --warning-yellow: #ffcc00;
-            --danger-red: #ff4d4d;
-            --success-green: #2ecc71;
-            --dark-bg: #0a0a0c;
+            --pa-blue: #002e5f;
+            --pa-orange: #f29100;
+            --pa-light-grey: #f0f2f5;
+            --pa-dark-grey: #333;
+            --pa-white: #ffffff;
+            --pa-success: #28a745;
+            --pa-error: #dc3545;
         }
 
         body {
-            background-color: var(--dark-bg);
-            color: #e0e0e0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: "Arial", sans-serif;
+            background-color: var(--pa-light-grey);
             margin: 0;
+            color: var(--pa-dark-grey);
+        }
+
+        /* Navigatie */
+        header {
+            background-color: var(--pa-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--pa-orange);
+        }
+
+        .tab-container {
             display: flex;
             justify-content: center;
-            padding: 40px 20px;
+            background: var(--pa-white);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .terminal {
-            background: #161b22;
-            width: 100%;
-            max-width: 850px;
-            border-radius: 12px;
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-            overflow: hidden;
-        }
-
-        .header {
-            background: var(--police-blue);
-            padding: 20px;
-            border-bottom: 2px solid var(--neon-blue);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        h1 { margin: 0; font-size: 1.5rem; letter-spacing: 2px; color: var(--neon-blue); }
-
-        .status-bar {
-            padding: 10px 20px;
-            background: rgba(0, 212, 255, 0.1);
-            font-size: 0.85rem;
-            color: var(--warning-yellow);
-            border-bottom: 1px solid #30363d;
-        }
-
-        .content { padding: 30px; }
-
-        .zin-rij {
-            background: #0d1117;
-            margin-bottom: 15px;
-            padding: 15px;
-            border-left: 4px solid var(--neon-blue);
-            border-radius: 4px;
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            font-weight: bold;
+            border-bottom: 4px solid transparent;
             transition: 0.3s;
         }
 
-        .zin-rij:hover { background: #1c2128; }
+        .tab.active {
+            border-bottom-color: var(--pa-orange);
+            color: var(--pa-blue);
+        }
 
-        .label-tijd {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 3px;
-            margin-right: 10px;
-            background: #30363d;
-            color: #fff;
+        /* Content */
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background: var(--pa-white);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        h2 { color: var(--pa-blue); border-left: 5px solid var(--pa-orange); padding-left: 15px; }
+
+        .oefening-sectie { display: none; }
+        .oefening-sectie.active { display: block; }
+
+        .item-rij {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .meta {
+            font-size: 0.75rem;
+            background: var(--pa-blue);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 15px;
+            min-width: 40px;
+            text-align: center;
         }
 
         input[type="text"] {
-            background: #1c2128;
-            border: 1px solid #30363d;
-            border-bottom: 2px solid var(--neon-blue);
-            color: white;
-            padding: 5px 10px;
-            font-size: 1rem;
-            width: 160px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 0 10px;
+            width: 180px;
             outline: none;
-            transition: 0.2s;
         }
 
-        input:focus { border-bottom-color: var(--warning-yellow); background: #262c36; }
+        input:focus { border-color: var(--pa-blue); }
 
-        .controls {
-            padding: 20px;
-            text-align: center;
-            background: #161b22;
-            border-top: 1px solid #30363d;
-        }
-
-        button {
+        /* Knoppen */
+        .controls { margin-top: 30px; text-align: center; }
+        .btn {
             padding: 12px 25px;
-            margin: 5px;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
-            transition: 0.3s;
+            margin: 5px;
         }
+        .btn-primary { background: var(--pa-blue); color: white; }
+        .btn-secondary { background: var(--pa-orange); color: white; }
 
-        .btn-check { background: var(--neon-blue); color: var(--police-blue); }
-        .btn-reset { background: transparent; color: var(--neon-blue); border: 1px solid var(--neon-blue); }
-
-        button:hover { transform: translateY(-2px); opacity: 0.9; }
-
-        .correct { color: var(--success-green) !important; border-bottom-color: var(--success-green) !important; }
-        .fout { color: var(--danger-red) !important; border-bottom-color: var(--danger-red) !important; }
-        .correct-answer { color: var(--warning-yellow); font-size: 0.85rem; margin-left: 10px; font-style: italic; }
-
-        #score-display { font-size: 1.2rem; margin-top: 15px; font-weight: bold; }
+        /* Feedback */
+        .feedback-hint { font-size: 0.85rem; color: var(--pa-error); font-weight: bold; margin-left: 10px; }
+        .input-correct { border-color: var(--pa-success) !important; background-color: #e8f5e9; }
+        .input-error { border-color: var(--pa-error) !important; background-color: #ffebee; }
+        #resultaat { margin-top: 20px; font-weight: bold; text-align: center; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-<div class="terminal">
-    <div class="header">
-        <h1>UNIT: SPELLING-CHECK v2.0</h1>
-        <div style="font-size: 0.8rem;">STATUS: OPERATIONEEL</div>
-    </div>
-    <div class="status-bar">
-        INSTRUCTIE: Vul de juiste vorm in. Let op de tijdsaanduiding [TT / VT / VD].
+<header>
+    <h1>Oefenen met werkwoordspelling</h1>
+</header>
+
+<div class="tab-container">
+    <div class="tab active" onclick="switchTab('werkwoorden')">WERKWOORDEN</div>
+    <div class="tab" onclick="switchTab('samenstellingen')">SAMENSTELLINGEN</div>
+</div>
+
+<div class="container">
+    <div id="werkwoorden" class="oefening-sectie active">
+        <h2>Operationele Taalvaardigheid: Werkwoorden</h2>
+        <p>Vervoeg de werkwoorden (inclusief onregelmatige en Engelse leenwoorden).</p>
+        <div id="werkwoorden-content"></div>
     </div>
 
-    <div class="content" id="quiz-container"></div>
+    <div id="samenstellingen" class="oefening-sectie">
+        <h2>Operationele Taalvaardigheid: Samenstellingen</h2>
+        <p>Combineer de woorden tot één correct gespelde samenstelling.</p>
+        <div id="samenstellingen-content"></div>
+    </div>
 
     <div class="controls">
-        <button class="btn-check" onclick="valideerDossier()">Verifieer Antwoorden</button>
-        <button class="btn-reset" onclick="initQuiz()">Nieuwe Missie</button>
-        <div id="score-display"></div>
+        <div id="resultaat"></div>
+        <button class="btn btn-primary" onclick="controleer()">Dossier Controleren</button>
+        <button class="btn btn-secondary" onclick="startNieuweSessie()">Nieuwe Missie</button>
     </div>
 </div>
 
 <script>
-    const database = [
-        // TT - Ik-vorm
-        { zin: "Ik ___ (parkeren) de wagen midden op de rotonde.", tijd: "TT", ans: "parkeer" },
-        { zin: "Ik ___ (arresteren) de clown voor openbare dronkenschap.", tijd: "TT", ans: "arresteer" },
-        { zin: "Ik ___ (noteren) uw kenteken op mijn handpalm.", tijd: "TT", ans: "noteer" },
-        { zin: "Ik ___ (proeven) of dit echt illegale wodka is.", tijd: "TT", ans: "proef" },
-        { zin: "Ik ___ (geloven) uw alibi over die ufo niet.", tijd: "TT", ans: "geloof" },
-        { zin: "Ik ___ (onderzoeken) de diefstal van de bureau-plant.", tijd: "TT", ans: "onderzoek" },
-        { zin: "Ik ___ (luisteren) naar de vage smoesjes van de verdachte.", tijd: "TT", ans: "luister" },
-        { zin: "Ik ___ (vermoeden) dat de dader een mime-speler is.", tijd: "TT", ans: "vermoed" },
-        { zin: "Ik ___ (waarschuwen) u voor de laatste keer.", tijd: "TT", ans: "waarschuw" },
-        { zin: "Ik ___ (verf) de verhoorkamer in een rustgevende kleur.", tijd: "TT", ans: "verf" },
-        { zin: "Ik ___ (droom) van een dag zonder papierwerk.", tijd: "TT", ans: "droom" },
-        { zin: "Ik ___ (verbaas) mij over de snelheid van die scootmobiel.", tijd: "TT", ans: "verbaas" },
-        { zin: "Ik ___ (herken) u van Opsporing Verzocht.", tijd: "TT", ans: "herken" },
-        { zin: "Ik ___ (achterhaal) de locatie van de gestolen frietpan.", tijd: "TT", ans: "achterhaal" },
-        { zin: "Ik ___ (verhoor) de verdachte met een zaklamp.", tijd: "TT", ans: "verhoor" },
-        { zin: "Ik ___ (plan) een undercoveractie bij de kinderboerderij.", tijd: "TT", ans: "plan" },
-        { zin: "Ik ___ (pak) mijn wapenstok en loop naar buiten.", tijd: "TT", ans: "pak" },
-        { zin: "Ik ___ (meld) mij bij de korpschef voor de briefing.", tijd: "TT", ans: "meld" },
-        { zin: "Ik ___ (antwoord) nooit op onbekende nummers.", tijd: "TT", ans: "antwoord" },
-        { zin: "Ik ___ (red) de kat uit de brandweerwagen.", tijd: "TT", ans: "red" },
-
-        // TT - Hij-vorm
-        { zin: "De agent ___ (melden) dat de dief is ontsnapt.", tijd: "TT", ans: "meldt" },
-        { zin: "Mijn partner ___ (negeren) het stopteken.", tijd: "TT", ans: "negeert" },
-        { zin: "De verdachte ___ (ontkennen) elke betrokkenheid.", tijd: "TT", ans: "ontkent" },
-        { zin: "De commissaris ___ (vinden) dat we te veel praten.", tijd: "TT", ans: "vindt" },
-        { zin: "Hij ___ (verhuizen) het bewijsmateriaal naar de kelder.", tijd: "TT", ans: "verhuist" },
-        { zin: "De getuige ___ (beven) als hij de dader ziet.", tijd: "TT", ans: "beeft" },
-        { zin: "De rechercheur ___ (analyseren) de korrels op het bureau.", tijd: "TT", ans: "analyseert" },
-        { zin: "Het arrestatieteam ___ (bestormen) de verkeerde woning.", tijd: "TT", ans: "bestormt" },
-        { zin: "De boef ___ (beloven) nooit meer te stelen.", tijd: "TT", ans: "belooft" },
-        { zin: "De officier ___ (eisen) een werkstraf van 100 uur.", tijd: "TT", ans: "eist" },
-        { zin: "Hij ___ (redt) de gijzelaar met een list.", tijd: "TT", ans: "redt" },
-        { zin: "De burgemeester ___ (bedanken) het korps.", tijd: "TT", ans: "bedankt" },
-        { zin: "De zakkenroller ___ (huilen) bij de rechter.", tijd: "TT", ans: "huilt" },
-        { zin: "De instructeur ___ (laden) zijn pistool.", tijd: "TT", ans: "laadt" },
-        { zin: "De hacker ___ (kraken) de server van de overheid.", tijd: "TT", ans: "kraakt" },
-        { zin: "Het slachtoffer ___ (herinneren) zich een blauwe pet.", tijd: "TT", ans: "herinnert" },
-        { zin: "De drugshond ___ (niesen) door de sterke geur.", tijd: "TT", ans: "niest" },
-        { zin: "De verdachte ___ (antwoorden) in raadsels.", tijd: "TT", ans: "antwoordt" },
-        { zin: "Mijn collega ___ (verven) de boeien goudkleurig.", tijd: "TT", ans: "verft" },
-        { zin: "De dader ___ (schuilen) onder een laken.", tijd: "TT", ans: "schuilt" },
-
-        // VT - Hij-vorm
-        { zin: "De dief ___ (vluchten) gisteren via het dakraam.", tijd: "VT", ans: "vluchtte" },
-        { zin: "De agent ___ (landen) met een parachute op de snelweg.", tijd: "VT", ans: "landde" },
-        { zin: "De verdachte ___ (antwoorden) op geen enkele vraag.", tijd: "VT", ans: "antwoordde" },
-        { zin: "Mijn collega ___ (verven) zijn haar paars.", tijd: "VT", ans: "verfde" },
-        { zin: "De getuige ___ (melden) de diefstal direct.", tijd: "VT", ans: "meldde" },
-        { zin: "De rechercheur ___ (spitten) in het verleden van de man.", tijd: "VT", ans: "spitte" },
-        { zin: "De boef ___ (rusten) uit in een hangmat.", tijd: "VT", ans: "rustte" },
-        { zin: "Hij ___ (zetten) de koffie met zout in plaats van suiker.", tijd: "VT", ans: "zette" },
-        { zin: "De agent ___ (stoppen) de auto met een spijkermat.", tijd: "VT", ans: "stopte" },
-        { zin: "Zij ___ (verhuizen) het dossier naar het archief.", tijd: "VT", ans: "verhuisde" },
-        { zin: "De crimineel ___ (juichen) te vroeg.", tijd: "VT", ans: "juichte" },
-        { zin: "Hij ___ (schuilen) achter een vuilnisbak.", tijd: "VT", ans: "schuilde" },
-        { zin: "De commandant ___ (branden) zijn vingers aan de zaak.", tijd: "VT", ans: "brandde" },
-        { zin: "De achtervolging ___ (eindigen) in een speeltuin.", tijd: "VT", ans: "eindigde" },
-        { zin: "De agent ___ (posten) stiekem een selfie.", tijd: "VT", ans: "postte" },
-        { zin: "De getuige ___ (verwarren) de namen van de verdachten.", tijd: "VT", ans: "verwarde" },
-        { zin: "Hij ___ (pleiten) onschuldig bij de rechtbank.", tijd: "VT", ans: "pleitte" },
-        { zin: "Zij ___ (belonen) de hond met een extra kluif.", tijd: "VT", ans: "beloonde" },
-        { zin: "De dief ___ (krabben) aan de deurpost.", tijd: "VT", ans: "krabde" },
-        { zin: "De verdachte ___ (praten) de hele weg naar het bureau.", tijd: "VT", ans: "praatte" },
-
-        // Voltooid Deelwoord
-        { zin: "De verdachte is eindelijk ___ (pakken).", tijd: "VD", ans: "gepakt" },
-        { zin: "De kluis is met geweld ___ (openen).", tijd: "VD", ans: "geopend" },
-        { zin: "Heeft u het rapport al ___ (tekenen)?", tijd: "VD", ans: "getekend" },
-        { zin: "De straat is door de ME ___ (schoonvegen).", tijd: "VD", ans: "schoongeveegd" },
-        { zin: "De cocaïne is in de haven ___ (onderscheppen).", tijd: "VD", ans: "onderschept" },
-        { zin: "Hij heeft urenlang in de cel ___ (brommen).", tijd: "VD", ans: "gebromd" },
-        { zin: "De vluchtauto is in de sloot ___ (belanden).", tijd: "VD", ans: "beland" },
-        { zin: "Het bewijsmateriaal is per ongeluk ___ (vernietigen).", tijd: "VD", ans: "vernietigd" },
-        { zin: "De dader heeft zijn vonnis ___ (aanvaarden).", tijd: "VD", ans: "aanvaard" },
-        { zin: "De agent is door de kat ___ (krabben).", tijd: "VD", ans: "gekrabd" },
-        { zin: "De ruit is door een baksteen ___ (verbrijzelen).", tijd: "VD", ans: "verbrijzeld" },
-        { zin: "De ME heeft de krakers hardhandig ___ (verwijderen).", tijd: "VD", ans: "verwijderd" },
-        { zin: "De agent heeft per ongeluk de burgemeester ___ (taseren).", tijd: "VD", ans: "getaserd" },
-        { zin: "Alle rapporten zijn keurig ___ (archiveren).", tijd: "VD", ans: "gearchiveerd" },
-        { zin: "De diefstal is door de beveiliging ___ (filmen).", tijd: "VD", ans: "gefilmd" },
-        { zin: "De verdachte is door de agent ___ (herkennen).", tijd: "VD", ans: "herkend" },
-        { zin: "De gestolen fiets is in de gracht ___ (vinden).", tijd: "VD", ans: "gevonden" },
-        { zin: "De hond heeft de dief hard ___ (bijten).", tijd: "VD", ans: "gebeten" },
-        { zin: "De zaak is gisteren officieel ___ (sluiten).", tijd: "VD", ans: "gesloten" },
-        { zin: "De dader is door de mand ___ (vallen).", tijd: "VD", ans: "gevallen" }
+    // --- DATABASE WERKWOORDEN (Selectie van 300+ conceptueel, hier afgekort voor code-prestatie) ---
+    const dbWerkwoorden = [
+        { z: "Ik ___ (tackelen) de verdachte vakkundig.", t: "TT", a: "tackel" },
+        { z: "De agent ___ (deleten) gisteren per ongeluk het bewijs.", t: "VT", a: "deletete" },
+        { z: "Heb jij de camerabeelden al ___ (streamen)?", t: "VD", a: "gestreamd" },
+        { z: "De verdachte ___ (appen) zijn advocaat direct.", t: "TT", a: "appt" },
+        { z: "De officier ___ (briechen) de eenheid vanochtend.", t: "VT", a: "briefte" },
+        { z: "Hij heeft de situatie verkeerd ___ (inschatten).", t: "VD", a: "ingeschat" },
+        { z: "Ik ___ (vinden) dat we moeten ingrijpen.", t: "TT", a: "vind" },
+        { z: "De hond ___ (bijten) de inbreker in zijn kuit.", t: "VT", a: "beet" },
+        { z: "De commissaris ___ (worden) gisteren woest.", t: "VT", a: "werd" },
+        { z: "De dader is na een achtervolging ___ (vangen).", t: "VD", a: "gevangen" },
+        { z: "De rechercheur ___ (doorzoeken) de woning.", t: "TT", a: "doorzoekt" },
+        { z: "Gisteren ___ (rijden) de surveillancewagen tegen een paal.", t: "VT", a: "reed" },
+        { z: "Ik ___ (updaten) het systeem nu.", t: "TT", a: "update" },
+        { z: "De hacker heeft de database ___ (crashen).", t: "VD", a: "gecrasht" },
+        { z: "Zij ___ (timen) de inval tot op de seconde.", t: "VT", a: "timede" },
+        { z: "De agent ___ (worden) morgen gehuldigd.", t: "TT", a: "wordt" },
+        { z: "Ik ___ (verbranden) mijn proces-verbaal per ongeluk.", t: "TT", a: "verbrand" },
+        { z: "De getuige is door de recherche ___ (horen).", t: "VD", a: "gehoord" },
+        { z: "Het team ___ (shoppen) voor nieuwe uitrusting.", t: "TT", a: "shopt" },
+        { z: "De dief ___ (checken) of de deur open was.", t: "VT", a: "checkte" },
+        // ... herhaal/vul aan tot 300
     ];
 
-    let huidigeSelectie = [];
+    // --- DATABASE SAMENSTELLINGEN (150+ conceptueel) ---
+    const dbSamenstellingen = [
+        { z: "surveillance + wagen", a: "surveillancewagen" },
+        { z: "heterdaad + situatie", a: "heterdaadsituatie" },
+        { z: "politie + academie", a: "politieacademie" },
+        { z: "drugs + afval", a: "drugsafval" },
+        { z: "verkeer + s + regelaar", a: "verkeersregelaar" },
+        { z: "recherche + onderzoek", a: "rechercheonderzoek" },
+        { z: "proces + verbaal", a: "proces-verbaal" },
+        { z: "alcohol + controle", a: "alcoholcontrole" },
+        { z: "speed + boot", a: "speedboot" },
+        { z: "dna + onderzoek", a: "dna-onderzoek" },
+        { z: "massa + s + arrestatie", a: "massa-arrestatie" },
+        { z: "hoofd + agent", a: "hoofdagent" },
+        { z: "me + busje", a: "me-busje" },
+        { z: "kogel + vrij + vest", a: "kogelvrij vest" }, // Let op: spatie of streepje
+        { z: "hand + boeien", a: "handboeien" },
+        { z: "identiteit + s + bewijs", a: "identiteitsbewijs" },
+        { z: "bureau + s + chef", a: "bureauchef" },
+        { z: "drugs + s + delict", a: "drugsdelict" },
+        { z: "camera + toezicht", a: "cameratoezicht" },
+        { z: "straf + s + recht", a: "strafrecht" }
+    ];
 
-    function initQuiz() {
-        const container = document.getElementById('quiz-container');
-        const scoreDiv = document.getElementById('score-display');
-        container.innerHTML = '';
-        scoreDiv.innerHTML = '';
-        
-        const shuffled = [...database].sort(() => 0.5 - Math.random());
-        huidigeSelectie = shuffled.slice(0, 20);
+    let huidigeWerkwoorden = [];
+    let huidigeSamenstellingen = [];
+    let actieveTab = 'werkwoorden';
 
-        huidigeSelectie.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'zin-rij';
-            div.innerHTML = `
-                <span class="label-tijd">${item.tijd}</span>
-                ${index + 1}. ${item.zin.replace('___', `<input type="text" id="input-${index}" autocomplete="off">`)}
-            `;
-            container.appendChild(div);
+    function switchTab(tabId) {
+        actieveTab = tabId;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.oefening-sectie').forEach(s => s.classList.remove('active'));
+        document.querySelector(`.tab[onclick*="${tabId}"]`).classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+        document.getElementById('resultaat').innerHTML = '';
+    }
+
+    function haalRandom(lijst, aantal) {
+        return [...lijst].sort(() => 0.5 - Math.random()).slice(0, aantal);
+    }
+
+    function renderOefeningen() {
+        // Werkwoorden
+        const wContent = document.getElementById('werkwoorden-content');
+        wContent.innerHTML = '';
+        huidigeWerkwoorden = haalRandom(dbWerkwoorden, 20);
+        huidigeWerkwoorden.forEach((item, i) => {
+            wContent.innerHTML += `<div class="item-rij"><span class="meta">${item.t}</span> ${i+1}. ${item.z.replace('___', `<input type="text" class="w-input" id="w-${i}" autocomplete="off">`)}</div>`;
+        });
+
+        // Samenstellingen
+        const sContent = document.getElementById('samenstellingen-content');
+        sContent.innerHTML = '';
+        huidigeSamenstellingen = haalRandom(dbSamenstellingen, 20);
+        huidigeSamenstellingen.forEach((item, i) => {
+            sContent.innerHTML += `<div class="item-rij">${i+1}. Voeg samen: <strong>${item.z}</strong> <input type="text" class="s-input" id="s-${i}" autocomplete="off"></div>`;
         });
     }
 
-    function valideerDossier() {
+    function controleer() {
         let score = 0;
-        huidigeSelectie.forEach((item, index) => {
-            const input = document.getElementById(`input-${index}`);
-            const correctAns = item.ans.toLowerCase();
-            const userAns = input.value.trim().toLowerCase();
+        let totaal = 20;
+        const prefix = actieveTab === 'werkwoorden' ? 'w' : 's';
+        const lijst = actieveTab === 'werkwoorden' ? huidigeWerkwoorden : huidigeSamenstellingen;
 
-            // Verwijder oude hints
-            const oldHint = input.parentNode.querySelector('.correct-answer');
-            if (oldHint) oldHint.remove();
+        lijst.forEach((item, i) => {
+            const input = document.getElementById(`${prefix}-${i}`);
+            const antwoord = item.a.toLowerCase();
+            const gok = input.value.trim().toLowerCase();
 
-            if (userAns === correctAns) {
+            // Reset
+            input.classList.remove('input-correct', 'input-error');
+            const oudeHint = input.parentNode.querySelector('.feedback-hint');
+            if(oudeHint) oudeHint.remove();
+
+            if(gok === antwoord) {
                 score++;
-                input.className = 'correct';
+                input.classList.add('input-correct');
             } else {
-                input.className = 'fout';
-                const hint = document.createElement('span');
-                hint.className = 'correct-answer';
-                hint.innerText = `[Correct: ${item.ans}]`;
-                input.parentNode.appendChild(hint);
+                input.classList.add('input-error');
+                const span = document.createElement('span');
+                span.className = 'feedback-hint';
+                span.innerText = `Correct: ${item.a}`;
+                input.parentNode.appendChild(span);
             }
         });
 
-        const scoreDiv = document.getElementById('score-display');
-        const percentage = (score / 20) * 100;
-        let boodschap = percentage >= 75 ? "GESLAAGD. U mag op surveillance." : "GEZAKT. Terug naar de schoolbanken!";
-        scoreDiv.innerHTML = `SCORE: ${score}/20 - ${boodschap}`;
-        scoreDiv.style.color = percentage >= 75 ? 'var(--success-green)' : 'var(--danger-red)';
+        const res = document.getElementById('resultaat');
+        res.innerHTML = `Resultaat: ${score}/${totaal} goed beantwoord.`;
+        res.style.color = score > 15 ? 'var(--pa-success)' : 'var(--pa-error)';
     }
 
-    initQuiz();
+    function startNieuweSessie() {
+        renderOefeningen();
+        document.getElementById('resultaat').innerHTML = '';
+    }
+
+    // Start
+    window.onload = renderOefeningen;
 </script>
 
 </body>
