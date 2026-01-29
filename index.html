@@ -3,42 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Politieacademie - Oefenen met Spelling</title>
+    <title>Oefenen met Spelling</title>
     <style>
         :root {
-            --pa-blue: #002e5f;
-            --pa-orange: #f29100;
-            --pa-light-grey: #f0f2f5;
-            --pa-white: #ffffff;
-            --pa-success: #28a745;
-            --pa-error: #dc3545;
-            --pa-tip: #0056b3;
+            --primary-blue: #003366;
+            --accent-orange: #ff9900;
+            --bg-light: #f4f7f9;
+            --white: #ffffff;
+            --success: #2e7d32;
+            --error: #d32f2f;
+            --tip-color: #0277bd;
         }
 
-        body { font-family: "Arial", sans-serif; background: var(--pa-light-grey); margin: 0; }
-        header { background: var(--pa-blue); color: white; padding: 30px; text-align: center; border-bottom: 5px solid var(--pa-orange); }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-light); margin: 0; color: #333; }
+        header { background: var(--primary-blue); color: white; padding: 25px; text-align: center; border-bottom: 4px solid var(--accent-orange); }
         
-        .tab-bar { display: flex; justify-content: center; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .tab { padding: 15px 25px; cursor: pointer; font-weight: bold; color: var(--pa-blue); border-bottom: 4px solid transparent; }
-        .tab.active { border-bottom-color: var(--pa-orange); background: #f9f9f9; }
+        .tab-bar { display: flex; justify-content: center; background: var(--white); border-bottom: 1px solid #ddd; }
+        .tab { padding: 15px 30px; cursor: pointer; font-weight: 600; color: var(--primary-blue); border-bottom: 4px solid transparent; transition: 0.2s; }
+        .tab.active { border-bottom-color: var(--accent-orange); background: #f0f4f8; }
 
-        .container { max-width: 950px; margin: 30px auto; background: white; padding: 40px; border-radius: 4px; }
-        .instr { background: #e9ecef; padding: 15px; border-left: 5px solid var(--pa-blue); margin-bottom: 25px; font-size: 0.95rem; }
+        .container { max-width: 1000px; margin: 30px auto; background: var(--white); padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .instr { background: #e3f2fd; padding: 15px; border-left: 5px solid var(--primary-blue); margin-bottom: 25px; font-size: 0.95rem; line-height: 1.5; }
         
-        .item-rij { padding: 12px 0; border-bottom: 1px solid #eee; position: relative; }
-        input[type="text"] { border: 2px solid #ccc; padding: 8px; border-radius: 4px; width: 200px; }
+        .item-rij { padding: 15px 0; border-bottom: 1px solid #eee; }
+        .tijd-label { font-size: 0.75rem; font-weight: bold; background: #eee; padding: 2px 6px; border-radius: 3px; margin-right: 8px; color: #555; }
         
-        .feedback { display: block; font-size: 0.85rem; margin-top: 5px; font-weight: bold; }
-        .is-correct { border-color: var(--pa-success) !important; color: var(--pa-success); }
-        .is-error { border-color: var(--pa-error) !important; color: var(--pa-error); }
-        .tip-text { color: var(--pa-tip); font-style: italic; }
+        input[type="text"] { border: 2px solid #bbb; padding: 8px; border-radius: 4px; width: 220px; outline: none; }
+        input[type="text"]:focus { border-color: var(--primary-blue); }
+        
+        .feedback { display: block; font-size: 0.85rem; margin-top: 6px; font-weight: bold; min-height: 1.2em; }
+        .is-correct { border-color: var(--success) !important; color: var(--success); }
+        .is-error { border-color: var(--error) !important; color: var(--error); }
+        .tip-text { color: var(--tip-color); font-style: italic; }
 
-        .btn-box { text-align: center; margin-top: 30px; }
-        .btn { padding: 12px 30px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
-        .btn-check { background: var(--pa-blue); color: white; }
-        .btn-new { background: var(--pa-orange); color: white; margin-left: 10px; }
-        
-        .verhaal-box { line-height: 2; background: #fffdf5; padding: 20px; border: 1px solid #ddd; }
+        .controls { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+        .btn { padding: 14px 35px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
+        .btn-check { background: var(--primary-blue); color: white; }
+        .btn-check:hover { background: #002244; }
+        .btn-new { background: #607d8b; color: white; margin-left: 10px; }
     </style>
 </head>
 <body>
@@ -48,133 +50,170 @@
 </header>
 
 <div class="tab-bar">
-    <div class="tab active" onclick="showTab('werkwoord')">WERKWOORDEN</div>
-    <div class="tab" onclick="showTab('samenstelling')">SAMENSTELLINGEN</div>
-    <div class="tab" onclick="showTab('context')">CONTEXT & GETUIGEN</div>
+    <div class="tab active" id="tab-werkwoord" onclick="switchTab('werkwoord')">WERKWOORDEN</div>
+    <div class="tab" id="tab-samenstelling" onclick="switchTab('samenstelling')">SAMENSTELLINGEN</div>
+    <div class="tab" id="tab-context" onclick="switchTab('context')">CONTEXT & TEKST</div>
 </div>
 
 <div class="container">
     <div id="sectie-werkwoord" class="content-sectie">
         <div class="instr">
-            <strong>Instructie:</strong> Vervoeg het werkwoord tussen haakjes. Let op de tijd (TT/VT/VD). Bij fouten krijg je eerst een hint.
+            <strong>Werkwoorden:</strong> Vervoeg het werkwoord tussen haakjes. Let goed op de aangegeven tijd (TT = Tegenwoordige Tijd, VT = Verleden Tijd).
         </div>
         <div id="lijst-werkwoord"></div>
     </div>
 
     <div id="sectie-samenstelling" class="content-sectie" style="display:none;">
         <div class="instr">
-            <strong>Instructie:</strong> Voeg de woorden samen tot één woord. <u>Let op:</u> Bepaal zelf of er een tussen-s of koppelteken nodig is.
+            <strong>Samenstellingen:</strong> Combineer de woorden tot één correct geschreven woord. Bepaal zelf of er een tussen-s of koppelteken nodig is.
         </div>
         <div id="lijst-samenstelling"></div>
     </div>
 
     <div id="sectie-context" class="content-sectie" style="display:none;">
         <div class="instr">
-            <strong>Instructie:</strong> Vul de verklaring van de getuige aan. Let op samengestelde werkwoorden (bijv. <i>hield aan</i> of <i>aankwam</i>).
+            <strong>Context & Tekst:</strong> Vul de ontbrekende woorden in deze getuigenverklaring in. Let op samengestelde werkwoorden en de juiste spelling in de context van de zin.
         </div>
-        <div id="lijst-context" class="verhaal-box"></div>
+        <div id="lijst-context"></div>
     </div>
 
-    <div class="btn-box">
-        <div id="score-veld"></div>
-        <button class="btn btn-check" onclick="checkAntwoorden()">Controleren</button>
-        <button class="btn btn-new" onclick="init()">Nieuwe Opgaven</button>
+    <div class="controls">
+        <button class="btn btn-check" onclick="valideer()">Antwoorden Controleren</button>
+        <button class="btn btn-new" onclick="resetEnNieuw()">Nieuwe Missie</button>
     </div>
 </div>
 
 <script>
-    // Data (Versimpelde weergave van de 500+ items database)
-    const db = {
-        werkwoorden: [
-            { z: "De verdachte ___ (tackelen) de getuige gisteren.", t: "VT", a: "tackelde", tip: "Engels leenwoord: stam + de (t-kofschip geldt niet voor l)." },
-            { z: "Ik ___ (antwoorden) altijd direct op de portofoon.", t: "TT", a: "antwoord", tip: "Ik-vorm: alleen de stam gebruiken." },
-            { z: "De hoofdagent ___ (vinden) dat we moeten stoppen.", t: "TT", a: "vindt", tip: "Hij-vorm: stam + t." },
-            { z: "Heeft u de camerabeelden al ___ (deleten)?", t: "VD", a: "gedeletet", tip: "Kijk naar de laatste klank van 'delete' (t), dus met een t op het eind." },
-            { z: "De hond ___ (bijten) de boef in zijn been.", t: "VT", a: "beet", tip: "Dit is een onregelmatig (sterk) werkwoord." }
-            // Vul aan tot 300...
+    // Database (Verkorte weergave, makkelijk uit te breiden naar 300+ items)
+    const database = {
+        werkwoord: [
+            { z: "Ik ___ (antwoorden) direct op het bericht.", t: "TT", a: "antwoord", tip: "Ik-vorm is alleen de stam." },
+            { z: "De verdachte ___ (tackelen) de beveiliger.", t: "VT", a: "tackelde", tip: "Engels werkwoord: stam (tackel) + de." },
+            { z: "Hij ___ (vinden) dat de regels te streng zijn.", t: "TT", a: "vindt", tip: "Hij-vorm: stam (vind) + t." },
+            { z: "Gisteren ___ (gebeuren) er iets vreemds.", t: "VT", a: "gebeurde", tip: "Verleden tijd van een regelmatig werkwoord op r." },
+            { z: "De getuige ___ (herkennen) de dader direct.", t: "VT", a: "herkende", tip: "Verleden tijd van herkennen." },
+            { z: "Ik ___ (updaten) mijn computer nu.", t: "TT", a: "update", tip: "Ik-vorm van een Engels werkwoord op -e." },
+            { z: "De hond ___ (bijten) de inbreker.", t: "VT", a: "beet", tip: "Dit is een onregelmatig (sterk) werkwoord." },
+            { z: "De agent ___ (worden) gisteren geprezen.", t: "VT", a: "werd", tip: "Verleden tijd van worden." },
+            { z: "Het slachtoffer ___ (aangifte doen) gisteren.", t: "VT", a: "deed aangifte", tip: "Samengesteld werkwoord in de verleden tijd." },
+            { z: "De man ___ (ontkennen) alles.", t: "TT", a: "ontkent", tip: "Hij-vorm: stam + t." },
+            { z: "Zij ___ (appen) mij over het incident.", t: "VT", a: "appte", tip: "Engels leenwoord: stam eindigt op p, dus +te." },
+            { z: "Wij ___ (verhuizen) de bewijsstukken.", t: "VT", a: "verhuisden", tip: "Verleden tijd meervoud: stam + den." },
+            { z: "De zon ___ (schijnen) fel op de plaats delict.", t: "VT", a: "scheen", tip: "Sterk werkwoord (ij wordt ee)." },
+            { z: "Ik ___ (verbranden) mijn vingers aan de zaak.", t: "TT", a: "verbrand", tip: "Ik-vorm: stam eindigt op d." },
+            { z: "De dader ___ (vluchten) te voet.", t: "VT", a: "vluchtte", tip: "Stam eindigt op t, dus +te." },
+            { z: "De camera ___ (registreren) alles.", t: "TT", a: "registreert", tip: "Hij-vorm: stam + t." },
+            { z: "De rechercheur ___ (doorzoeken) de tas.", t: "VT", a: "doorzocht", tip: "Onregelmatig werkwoord." },
+            { z: "De auto ___ (crashen) tegen de boom.", t: "VT", a: "crashte", tip: "Stam eindigt op sh-klank, dus +te." },
+            { z: "Hij ___ (beloven) beterschap.", t: "TT", a: "belooft", tip: "Hij-vorm: stam (beloof) + t." },
+            { z: "Ik ___ (checken) de papieren.", t: "TT", a: "check", tip: "Ik-vorm van checken." }
         ],
-        samenstellingen: [
-            { z: "politie + auto", a: "politieauto", tip: "Woorden met 'politie' krijgen meestal geen tussen-n of s." },
-            { z: "beleid + medewerker", a: "beleidsmedewerker", tip: "Hoort u een 's' als u het uitspreekt? Dan schrijft u hem ook." },
-            { z: "proces + verbaal", a: "proces-verbaal", tip: "Dit woord krijgt altijd een koppelteken." },
-            { z: "drug + runner", a: "drugsrunner", tip: "Bij samenstellingen met drugs gebruiken we vaak de s-vorm." }
-            // Vul aan tot 150...
+        samenstelling: [
+            { z: "onderzoek + rapport", a: "onderzoeksrapport", tip: "Hoor je de tussen-s bij het uitspreken?" },
+            { z: "politie + bureau", a: "politiebureau", tip: "Samenstellingen met politie zijn meestal aaneen zonder extra letters." },
+            { z: "dna + test", a: "dna-test", tip: "Gebruik een koppelteken bij afkortingen." },
+            { z: "proces + verbaal", a: "proces-verbaal", tip: "Dit is een vaste combinatie met een koppelteken." },
+            { z: "hoofd + agent", a: "hoofdagent", tip: "Schrijf dit als één woord." },
+            { z: "alcohol + controle", a: "alcoholcontrole", tip: "Twee zelfstandige naamwoorden aan elkaar." },
+            { z: "drugs + delict", a: "drugsdelict", tip: "Bij drugs-samenstellingen vaak een tussen-s." },
+            { z: "camera + toezicht", a: "cameratoezicht", tip: "Gewoon aan elkaar schrijven." },
+            { z: "heterdaad + situatie", a: "heterdaadsituatie", tip: "Hoor je de tussen-s?" },
+            { z: "me + busje", a: "me-busje", tip: "Afkortingen krijgen een koppelteken." },
+            { z: "verkeer + regelaar", a: "verkeersregelaar", tip: "Hoor je de tussen-s?" },
+            { z: "surveillance + wagen", a: "surveillancewagen", tip: "Schrijf als één woord." },
+            { z: "identiteit + bewijs", a: "identiteitsbewijs", tip: "Hoor je de tussen-s?" },
+            { z: "buurt + preventie", a: "buurtpreventie", tip: "Gewoon aan elkaar." },
+            { z: "vloeistof + sporen", a: "vloeistofsporen", tip: "Eén woord." },
+            { z: "nood + hulp", a: "noodhulp", tip: "Eén woord." },
+            { z: "speed + boot", a: "speedboot", tip: "Engelse leenwoorden in samenstellingen vaak aan elkaar." },
+            { z: "massa + arrestatie", a: "massa-arrestatie", tip: "Koppelteken bij klinkerbotsing (a-a)." },
+            { z: "gsm + mast", a: "gsm-mast", tip: "Afkorting + woord = koppelteken." },
+            { z: "getuige + verklaring", a: "getuigenverklaring", tip: "Krijgt dit woord een tussen-n?" }
         ],
         context: [
-            { z: "Toen ik bij het bureau ___, zag ik de dader.", w: "aankomen", a: "aankwam", tip: "Samengesteld werkwoord in de VT, moet aan elkaar." },
-            { z: "De agent ___ de verdachte direct ___.", w: "aanhouden", a: "hield aan", tip: "Dit werkwoord is hier gesplitst." },
-            { z: "Ik zag dat de auto heel hard ___.", w: "wegrijden", a: "wegreed", tip: "Verleden tijd van wegrijden." }
-            // Vul aan tot 200...
+            { z: "Toen de wagen eindelijk ___ , stapte de man uit.", w: "aankomen", a: "aankwam", tip: "Samengesteld werkwoord in VT (één woord)." },
+            { z: "De agent ___ de verdachte direct ___.", w: "aanhouden", a: "hield aan", tip: "In deze zin wordt het werkwoord gesplitst." },
+            { z: "Ik zag dat hij de tas stiekem ___.", w: "wegstoppen", a: "wegstopte", tip: "Verleden tijd, aan elkaar geschreven." },
+            { z: "De getuige wilde niet dat we de beelden ___.", w: "verwijderen", a: "verwijderden", tip: "Verleden tijd meervoud." },
+            { z: "Het systeem ___ automatisch ___ bij een fout.", w: "uitschakelen", a: "schakelt uit", tip: "Tegenwoordige tijd, gesplitst." }
+            // Voeg hier meer context-items toe...
         ]
     };
 
     let pogingen = {};
     let actieveTab = 'werkwoord';
 
-    function showTab(t) {
-        actieveTab = t;
-        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.content-sectie').forEach(el => el.style.display = 'none');
-        document.querySelector(`.tab[onclick*='${t}']`).classList.add('active');
-        document.getElementById(`sectie-${t}`).style.display = 'block';
+    function switchTab(tabId) {
+        actieveTab = tabId;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.content-sectie').forEach(s => s.style.display = 'none');
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+        document.getElementById(`sectie-${tabId}`).style.display = 'block';
     }
 
-    function init() {
-        pogingen = {};
-        renderSection('werkwoord', db.werkwoorden, 'lijst-werkwoord');
-        renderSection('samenstelling', db.samenstellingen, 'lijst-samenstelling');
-        renderContext();
-    }
-
-    function renderSection(type, data, targetId) {
-        const target = document.getElementById(targetId);
-        target.innerHTML = '';
-        const selectie = data.sort(() => 0.5 - Math.random()).slice(0, 20);
-        selectie.forEach((item, i) => {
-            const id = `${type}-${i}`;
-            pogingen[id] = { cur: 0, ans: item.a, tip: item.tip };
-            target.innerHTML += `<div class="item-rij">${i+1}. ${item.z.replace('___', `<input type="text" id="input-${id}" autocomplete="off">`)} <span id="feedback-${id}" class="feedback"></span></div>`;
+    function renderSection() {
+        // Werkwoorden & Samenstellingen
+        ['werkwoord', 'samenstelling'].forEach(type => {
+            const target = document.getElementById(`lijst-${type}`);
+            target.innerHTML = '';
+            const data = [...database[type]].sort(() => 0.5 - Math.random()).slice(0, 20);
+            
+            data.forEach((item, i) => {
+                const id = `${type}-${i}`;
+                pogingen[id] = { count: 0, ans: item.a, tip: item.tip };
+                const label = item.t ? `<span class="tijd-label">${item.t}</span>` : '';
+                target.innerHTML += `
+                    <div class="item-rij">
+                        ${i+1}. ${label}${item.z.replace('___', `<input type="text" id="input-${id}" autocomplete="off">`)}
+                        <span id="feedback-${id}" class="feedback"></span>
+                    </div>`;
+            });
         });
-    }
 
-    function renderContext() {
-        const target = document.getElementById('lijst-context');
-        target.innerHTML = "<em>Getuigenverklaring:</em><br>";
-        const selectie = db.context.sort(() => 0.5 - Math.random()).slice(0, 10);
-        selectie.forEach((item, i) => {
+        // Context (simulatie van 20 items in een tekstblok)
+        const cTarget = document.getElementById('lijst-context');
+        cTarget.innerHTML = '';
+        const cData = [...database.context].sort(() => 0.5 - Math.random()).slice(0, 10); // voorbeeld: 10 voor de flow
+        cData.forEach((item, i) => {
             const id = `context-${i}`;
-            pogingen[id] = { cur: 0, ans: item.a, tip: item.tip };
-            target.innerHTML += `<span> ... ${item.z.replace('___', `<input type="text" id="input-${id}" placeholder="(${item.w})">`)} </span>`;
+            pogingen[id] = { count: 0, ans: item.a, tip: item.tip };
+            cTarget.innerHTML += `<span> ... ${item.z.replace('___', `<input type="text" id="input-${id}" placeholder="(${item.w})">`)} </span><br><br>`;
         });
     }
 
-    function checkAntwoorden() {
+    function valideer() {
         Object.keys(pogingen).forEach(id => {
             if (!id.startsWith(actieveTab)) return;
             const input = document.getElementById(`input-${id}`);
-            const feedback = document.getElementById(`feedback-${id}`) || input.nextSibling;
+            const feedback = document.getElementById(`feedback-${id}`);
             const gok = input.value.trim().toLowerCase();
             const correct = pogingen[id].ans.toLowerCase();
 
             if (gok === correct) {
                 input.className = 'is-correct';
                 if(feedback) feedback.innerHTML = '✔ Correct';
-                feedback.className = 'feedback is-correct';
             } else if (gok !== "") {
-                pogingen[id].cur++;
+                pogingen[id].count++;
                 input.className = 'is-error';
-                if (pogingen[id].cur === 1) {
-                    feedback.innerHTML = '❌ Onjuist, probeer het nog eens.';
-                    feedback.className = 'feedback is-error';
-                } else if (pogingen[id].cur >= 2) {
-                    feedback.innerHTML = `💡 Tip: ${pogingen[id].tip}`;
-                    feedback.className = 'feedback tip-text';
+                if (pogingen[id].count === 1) {
+                    if(feedback) feedback.innerHTML = '❌ Onjuist, probeer het nog eens.';
+                } else if (pogingen[id].count >= 2) {
+                    if(feedback) {
+                        feedback.innerHTML = `💡 Tip: ${pogingen[id].tip}`;
+                        feedback.className = 'feedback tip-text';
+                    }
                 }
             }
         });
     }
 
-    init();
+    function resetEnNieuw() {
+        pogingen = {};
+        renderSection();
+    }
+
+    window.onload = renderSection;
 </script>
+
 </body>
 </html>
